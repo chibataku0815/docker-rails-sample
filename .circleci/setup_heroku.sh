@@ -7,8 +7,8 @@ sudo ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
 
 cat > ~/.netrc << EOF
 machine api.heroku.com
-  login $HEROKU_LOGIN
-  password $HEROKU_API_KEY
+  login chibataku0815@gmail.com
+  password 8638eb02-16b1-43aa-b409-a02274866f05
 EOF
 # machine git.heroku.com
 #   login $HEROKU_LOGIN

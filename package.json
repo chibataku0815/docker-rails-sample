@@ -1,9 +1,5 @@
 {
-  "name": "test-yarn",
-  "version": "0",
-  "description": "test-project",
-  "main": "index.js",
-  "repository": "https://github.com/chibataku0815/docker-rails-sample.git",
-  "author": "千葉工 <chibataku0815@gmail.com>",
-  "license": "MIT"
+  "name": "myapp",
+  "private": true,
+  "dependencies": {}
 }

@@ -14,4 +14,4 @@ ADD Gemfile.lock /myapp/Gemfile.lock
 RUN bundle install
 COPY . /myapp
 
-CMD ["bash", "./init.sh"]
+CMD bundle exec puma -C config/puma.rb

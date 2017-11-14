@@ -15,10 +15,10 @@ jobs:
       - run:
           name: docker-compose build
           command: docker-compose build
-       - run:
-          command: |
-            mkdir -p ~/caches
-            docker save $(docker images -q) -o ~/caches/images.tar
+      - run:
+        command: |
+          mkdir -p ~/caches
+          docker save $(docker images -q) -o ~/caches/images.tar
       - run:
           name: docker-compose up
           command: docker-compose up -d

@@ -1,56 +1,31 @@
 version: 2
 jobs:
   build:
-    parallelism: 3
-    docker:
-      - image: circleci/ruby:2.4-node
+    machine:
+      image: circleci/classic:edge
     steps:
       - checkout
-      # Which version of bundler?
       - run:
-          name: Which bundler?
-          command: bundle -v
-
-      # Restore bundle cache
-      - type: cache-restore
-        name: Restore bundle cache
-        keys:
-          - rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
-          - rails-demo-bundle-v2-
-
+          name: docker-compose build
+          command: docker-compose build
       - run:
-          name: Bundle Install
-          command: bundle check || bundle install
-
-      # Store bundle cache
-      - type: cache-save
-        name: Store bundle cache
-        key: rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
-
-      # Only necessary if app uses webpacker or yarn in some other way
-      - type: cache-restore
-        name: Restore yarn cache
-        keys:
-          - rails-demo-yarn-{{ checksum "yarn.lock" }}
-          - rails-demo-yarn-
-
+          name: docker-compose up
+          command: docker-compose up -d
       - run:
-          name: Yarn Install
-          command: yarn install || yarn
-
-      # Store yarn / webpacker cache
-      - type: cache-save
-        name: Store yarn cache
-        key: rails-demo-yarn-{{ checksum "yarn.lock" }}
-        paths:
-          - ~/.yarn-cache
+          name: sleep for waiting launch db
+          command: sleep 1
+      - run:
+          name: "before_test: setup db"
+          command: docker-compose run web rails db:create db:migrate
+      - run:
+          name: test
+          command: docker-compose run web rails test
+      - run:
+          name: docker-compose down
+          command: docker-compose down
   deploy:
     machine:
-      image: circleci/ruby:2.4-node
-      environment:
-        PATH: "registry.heroku.com/glacial-everglades-56011/node_modules/.bin"
+      image: circleci/classic:edge
     steps:
       - checkout
       # see: https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform
@@ -71,9 +46,7 @@ jobs:
             docker push registry.heroku.com/glacial-everglades-56011/web
       - run:
           name: heroku db migrate
-          command: |
-            heroku run assets:precompile --app glacial-everglades-56011
-            heroku run rails db:migrate --app glacial-everglades-56011
+          command: heroku run rails db:migrate --app glacial-everglades-56011
       - run:
           name: heroku maintenance off
           command: heroku maintenance:off --app glacial-everglades-56011

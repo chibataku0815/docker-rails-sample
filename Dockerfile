@@ -15,8 +15,8 @@ RUN bundle install
 
 # Install npm modules
 RUN npm install -g yarn
-COPY package.json /app/package.json
-COPY yarn.lock /app/yarn.lock
+COPY package.json /myapp/package.json
+COPY yarn.lock /myapp/yarn.lock
 RUN yarn
 
 COPY . /myapp

@@ -12,6 +12,7 @@ WORKDIR /myapp
 ADD Gemfile /myapp/Gemfile
 ADD Gemfile.lock /myapp/Gemfile.lock
 RUN bundle install
+RUN yarn install
 COPY . /myapp
 
 CMD bundle exec puma -C config/puma.rb

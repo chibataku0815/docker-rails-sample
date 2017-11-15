@@ -68,9 +68,6 @@ jobs:
             docker login --username=_ --password=8638eb02-16b1-43aa-b409-a02274866f05 registry.heroku.com
             docker push registry.heroku.com/glacial-everglades-56011/web
       - run:
-          name: Yarn Install
-          command: yarn install
-      - run:
           name: heroku db migrate
           command: heroku run rails db:migrate --app glacial-everglades-56011
       - run:

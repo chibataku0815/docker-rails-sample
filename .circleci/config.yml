@@ -48,7 +48,7 @@ jobs:
           - ~/.yarn-cache
   deploy:
     machine:
-      image: circleci/classic:edge
+      - image: circleci/ruby:2.4-node
     steps:
       - checkout
       # see: https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform
@@ -67,6 +67,23 @@ jobs:
           command: |
             docker login --username=_ --password=8638eb02-16b1-43aa-b409-a02274866f05 registry.heroku.com
             docker push registry.heroku.com/glacial-everglades-56011/web
+      # Only necessary if app uses webpacker or yarn in some other way
+      - type: cache-restore
+        name: Restore yarn cache
+        keys:
+          - rails-demo-yarn-{{ checksum "yarn.lock" }}
+          - rails-demo-yarn-
+
+      - run:
+          name: Yarn Install
+          command: yarn install
+
+      # Store yarn / webpacker cache
+      - type: cache-save
+        name: Store yarn cache
+        key: rails-demo-yarn-{{ checksum "yarn.lock" }}
+        paths:
+          - ~/.yarn-cache
       - run:
           name: heroku db migrate
           command: heroku run rails db:migrate --app glacial-everglades-56011

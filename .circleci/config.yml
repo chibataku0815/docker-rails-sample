@@ -73,6 +73,7 @@ jobs:
           name: heroku db migrate
           command: |
             heroku run yarn install --app glacial-everglades-56011
+            heroku run yarn add material-design-lite --app glacial-everglades-56011
             heroku run rails db:migrate --app glacial-everglades-56011
       - run:
           name: heroku maintenance off

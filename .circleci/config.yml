@@ -38,7 +38,7 @@ jobs:
 
       - run:
           name: Yarn Install
-          command: yarn install
+          command: yarn install || yarn
 
       # Store yarn / webpacker cache
       - type: cache-save

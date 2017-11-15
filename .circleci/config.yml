@@ -5,7 +5,6 @@ jobs:
       image: circleci/classic:edge
     steps:
       - checkout
-
       # Which version of bundler?
       - run:
           name: Which bundler?

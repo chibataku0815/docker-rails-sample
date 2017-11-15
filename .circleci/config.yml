@@ -58,7 +58,7 @@ jobs:
             docker push registry.heroku.com/glacial-everglades-56011/web
       - run:
           name: heroku yarn install
-          command: heroku run web yarn install --app glacial-everglades-56011 || heroku run web yarn list --app glacial-everglades-56011
+          command: heroku run yarn install --app glacial-everglades-56011 || heroku run yarn list --app glacial-everglades-56011
       - run:
           name: heroku db migrate
           command: heroku run rails db:migrate --app glacial-everglades-56011

@@ -5,39 +5,46 @@ jobs:
       image: circleci/classic:edge
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - my-docker-cache-{{ .Branch }}
-            - my-docker-cache
-      # 2. キャッシュイメージ読み込み
-      - run: if test -d ~/cache; then docker load -i ~/cache/image.tar; fi
-      # 3. ビルド
-      - run: docker build -t my-image .
-      # 4. イメージ書き出し
-      - run: mkdir -p ~/cache && docker save -o ~/cache/image.tar my-image $(docker history -q my-image | tail -n +2 | grep -v \<missing\> | tr '\n' ' ')
+
+      - type: cache-restore
+        name: Restore bundle cache
+        key: myapp-bundle-{{ checksum "Gemfile.lock" }}
+
+      - type: cache-restore
+        name: Restore yarn cache
+        key: myapp-yarn-{{ checksum "yarn.lock" }}
+
       - run:
-          name: docker-compose build
-          command: docker-compose build
+          name: Bundle Install
+          command: bin/bundle install --path vendor/bundle
+
       - run:
-          name: docker-compose up
-          command: docker-compose up -d
+          name: Yarn Install
+          command: yarn install
+
+      - type: cache-save
+        name: Store bundle cache
+        key: myapp-bundle-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+      - type: cache-save
+        name: Store yarn cache
+        key: myapp-yarn-{{ checksum "yarn.lock" }}
+        paths:
+          - ~/.yarn-cache
+
       - run:
-          name: sleep for waiting launch db
-          command: sleep 1
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:3000 -timeout 1m
+
       - run:
-          name: "before_test: setup db"
-          command: docker-compose run web rails db:create db:migrate
+          name: Database setup
+          command: bin/rails db:schema:load --trace
+
       - run:
-          name: test
-          command: docker-compose run web rails test
-      - run:
-          name: docker-compose down
-          command: docker-compose down
-      # 5. キャッシュ保存
-      - save_cache:
-          key: my-docker-cache-{{ .Branch }}-{{ checksum "~/cache/image.tar" }}
-          paths:
-            - ~/cache
+          name: Run tests
+          command: bin/rails test
   deploy:
     machine:
       image: circleci/classic:edge

@@ -5,9 +5,9 @@ jobs:
       image: circleci/classic:edge
     steps:
       - checkout
-        - restore_cache:
-          key: docker-{{ .Branch }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
-          paths: ~/caches/images.tar
+      - restore_cache:
+        key: docker-{{ .Branch }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
+        paths: ~/caches/images.tar
       - run:
           command: |
             set +o pipefail

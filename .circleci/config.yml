@@ -13,6 +13,7 @@ jobs:
             set +o pipefail
             docker load -i ~/caches/images.tar | true
       - run: pip install docker-compose
+      - run: docker-compose pull
       - run: docker-compose build
       - run:
           command: |

@@ -1,7 +1,8 @@
-version: 3
+version: 2
 jobs:
   build:
-    machine: true
+    machine:
+      image: circleci/classic:edge
     steps:
       - checkout
       - run:
@@ -23,7 +24,8 @@ jobs:
           name: docker-compose down
           command: docker-compose down
   deploy:
-    machine: true
+    machine:
+      image: circleci/classic:edge
     steps:
       - checkout
       # see: https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform

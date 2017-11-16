@@ -62,7 +62,7 @@ obs:
           command: heroku maintenance:off --app glacial-everglades-56011
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
       - generate_cache
       - deploy:

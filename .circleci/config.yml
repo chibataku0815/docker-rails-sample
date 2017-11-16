@@ -49,6 +49,10 @@ jobs:
       - checkout
       # see: https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform
       - run:
+          command: |
+            set +o pipefail
+            docker load -i ~/caches/images.tar | true
+      - run:
           name: "build docker image"
           command: docker build --rm=false -t registry.heroku.com/glacial-everglades-56011/web .
       - run:

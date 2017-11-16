@@ -13,7 +13,6 @@ jobs:
             set +o pipefail
             docker load -i ~/caches/images.tar | true
       - run: pip install docker-compose
-      - run: docker-compose pull
       - run: docker-compose build
       - run:
           command: |
@@ -22,6 +21,11 @@ jobs:
       - save_cache:
           key: docker-{{ .Branch }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
           paths: ~/caches/images.tar
+      - run:
+          command: |
+            set +o pipefail
+            docker load -i ~/caches/images.tar | true
+      - run: docker-compose build # 早い
       - run:
           name: docker-compose up
           command: docker-compose up -d

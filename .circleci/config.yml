@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:edge
     steps:
       - checkout
-       - restore_cache:
+        - restore_cache:
           key: docker-{{ .Branch }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
           paths: ~/caches/images.tar
       - run:
